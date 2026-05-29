@@ -51,9 +51,72 @@ This project is a **static Vite SPA** (no Express on Vercel). Root `vercel.json`
 
 If Vercel Root Directory is set to `client`, use Build Command `npm run build` and Output Directory `dist` instead.
 
+## Docker
+
+The repo includes a **multi-stage** `Dockerfile`:
+
+| Stage | Purpose |
+|-------|---------|
+| `builder` | Installs client dependencies and runs `vite build` |
+| `runner` | Production image with Express and `client/dist` only |
+
+**Prerequisites:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or Docker Engine) running locally.
+
+### Build the image
+
+From the repository root:
+
+```bash
+docker build -t votrex-portfolio .
+```
+
+### Run the container
+
+```bash
+docker run --rm -p 3000:3000 votrex-portfolio
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+### Custom port
+
+Map a different host port (container still listens on `3000`):
+
+```bash
+docker run --rm -p 8080:3000 votrex-portfolio
+```
+
+Or set `PORT` if your orchestrator expects it:
+
+```bash
+docker run --rm -p 3000:3000 -e PORT=3000 votrex-portfolio
+```
+
+### Useful commands
+
+```bash
+# Run in the background
+docker run -d --name votrex -p 3000:3000 votrex-portfolio
+
+# View logs
+docker logs -f votrex
+
+# Stop and remove
+docker stop votrex && docker rm votrex
+```
+
+### Image notes
+
+- Base image: `node:22-alpine`
+- Final image contains **Express only** (no Vite, TypeScript, or dev dependencies)
+- Static files are served from `client/dist` via `server.js`
+- `.dockerignore` excludes `node_modules`, local build output, and env files
+
+## Project structure
 
 ```
 votrex-portfolio/
+├── Dockerfile         # Multi-stage production image
 ├── server.js          # Express static server
 ├── package.json
 └── client/

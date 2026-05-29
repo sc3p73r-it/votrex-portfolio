@@ -31,7 +31,26 @@ npm run preview
 - **Theme:** Dark glass UI with accent `#3ee8b5`, blur panels, gradient hero
 - **Server:** Express static file host (no API; contact form is demo-only)
 
-## Project structure
+## Deploy to Vercel
+
+This project is a **static Vite SPA** (no Express on Vercel). Root `vercel.json` is configured to:
+
+- Install dependencies in `client/`
+- Build to `client/dist`
+- SPA fallback rewrites for client-side routing
+
+**Vercel project settings (if not using `vercel.json`):**
+
+| Setting | Value |
+|---------|-------|
+| Root Directory | *(leave empty — repo root)* |
+| Framework Preset | Vite |
+| Build Command | `npm install --prefix client && npm run build --prefix client` |
+| Output Directory | `client/dist` |
+| Install Command | `npm install --prefix client` |
+
+If Vercel Root Directory is set to `client`, use Build Command `npm run build` and Output Directory `dist` instead.
+
 
 ```
 votrex-portfolio/
